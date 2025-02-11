@@ -142,7 +142,7 @@ jreleaser {
 
             release {
                 github {
-                    repoOwner.set("mobile-dev-inc")
+                    repoOwner.set("test-party")
                     name.set("maestro")
                     tagName.set("cli-$CLI_VERSION")
                     releaseName.set("CLI $CLI_VERSION")
@@ -175,7 +175,7 @@ jreleaser {
             templateDirectory.set(file("src/jreleaser/distributions/maestro/brew"))
 
             repoTap {
-                repoOwner.set("mobile-dev-inc")
+                repoOwner.set("test-party")
                 name.set("homebrew-tap")
             }
 
