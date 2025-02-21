@@ -19,6 +19,8 @@
 
 package maestro.cli.command
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -168,6 +170,12 @@ class TestCommand : Callable<Int> {
 
     @Option(names = ["--api-key"], description = ["[Beta] API key"])
     private var apiKey: String? = null
+
+    @Option(
+        names = ["--hierarchy-output"],
+        description = ["Save the view hierarchy after running all steps of the test"]
+    )
+    private var hierarchyOutput: File? = null
 
     @CommandLine.Spec
     lateinit var commandSpec: CommandLine.Model.CommandSpec
@@ -389,6 +397,14 @@ class TestCommand : Callable<Int> {
 
         if (!flattenDebugOutput) {
             TestDebugReporter.deleteOldFiles()
+        }
+
+        if (hierarchyOutput != null) {
+            val hierarchy = jacksonObjectMapper()
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(maestro.viewHierarchy().root)
+            hierarchyOutput?.writeText(hierarchy)
         }
 
         val result = if (resultSingle == 0) 1 else 0
